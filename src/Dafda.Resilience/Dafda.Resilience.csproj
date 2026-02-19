@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>0.1.0</Version>
+    <PackageId>Dafda.Resilience</PackageId>
+    <Authors>Mikkel Schmidt (DFDS)</Authors>
+    <Description>Resilience strategies for Dafda</Description>
+    <PackageProjectUrl>https://github.com/dfds/Dafda.Resilience</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dfds/Dafda.Resilience</RepositoryUrl>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dafda" Version="1.1.0-beta1" />
+    <PackageReference Include="Polly.Core" Version="8.6.5" />
+    <PackageReference Include="Polly.Extensions" Version="8.6.5" />
+  </ItemGroup>
+
+</Project>
