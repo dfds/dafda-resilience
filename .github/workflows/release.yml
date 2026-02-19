@@ -1,0 +1,32 @@
+name: Dafda.Resilience Nuget Release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "*.*.*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Build and Release NuGet package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build package
+        run: dotnet pack Dafda.Resilience/Dafda.Resilience.csproj --configuration Release -p:Version=${{ github.ref_name }}
+      - name: Push package
+        if: startsWith(github.ref, 'refs/tags/')
+        run: dotnet nuget push Dafda.Resilience/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
