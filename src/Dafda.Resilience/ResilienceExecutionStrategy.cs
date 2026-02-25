@@ -25,7 +25,7 @@ public sealed class ResilienceExecutionStrategy(
         resilienceContext.Properties.Set(ResilienceKeys.MessageExecutionContextKey, context);
 
         var pipeline = pipelineProvider.GetPipeline(pipelineName);
-        await pipeline.ExecuteAsync(async ct => await action(ct), resilienceContext.CancellationToken);
+        await pipeline.ExecuteAsync(async ct => await action(ct), resilienceContext);
 
         ResilienceContextPool.Shared.Return(resilienceContext);
     }
