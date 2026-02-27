@@ -17,6 +17,8 @@ public sealed class ResilienceExecutionStrategy(
     /// Executes the specified action within the configured resilience pipeline.
     /// </summary>
     /// <param name="action">The consumer action to execute with resilience strategies applied.</param>
+    /// <param name="context">The message execution context containing metadata about the current message being processed.</param>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous execution of the action within the resilience pipeline.</returns>
     public async Task Execute(Func<CancellationToken, Task> action, MessageExecutionContext context, CancellationToken cancellationToken)
     {
@@ -30,3 +32,4 @@ public sealed class ResilienceExecutionStrategy(
         ResilienceContextPool.Shared.Return(resilienceContext);
     }
 }
+

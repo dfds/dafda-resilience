@@ -3,7 +3,7 @@ using Polly;
 
 namespace Dafda.Resilience;
 
-public static class ResilienceKeys
+internal static class ResilienceKeys
 {
-    public static readonly ResiliencePropertyKey<MessageExecutionContext> MessageExecutionContextKey = new("MessageExecutionContextKey");
+    internal static readonly ResiliencePropertyKey<MessageExecutionContext> MessageExecutionContextKey = new("MessageExecutionContextKey");
 }
