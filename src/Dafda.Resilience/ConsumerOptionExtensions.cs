@@ -1,10 +1,12 @@
 ﻿using Dafda.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
 using Polly.Registry;
 
 namespace Dafda.Resilience;
 
+/// <summary>
+/// Provides extension methods for configuring resilience capabilities on Dafda consumer options.
+/// </summary>
 public static class ConsumerOptionExtensions
 {
     /// <summary>
