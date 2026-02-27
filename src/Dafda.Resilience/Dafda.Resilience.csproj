@@ -15,13 +15,11 @@
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<DocumentationFile>bin\Release\$(TargetFramework)\Dafda.Resilience.xml</DocumentationFile>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="bin\Release\$(TargetFramework)\Dafda.Resilience.xml" Pack="true" PackagePath="lib/$(TargetFramework)/" />
-		<None Include="README.md" Pack="true" PackagePath="\"/>
+		<None Include="../../README.md" Pack="true" PackagePath="README.md"/>
 	</ItemGroup>
 
 	<ItemGroup>
