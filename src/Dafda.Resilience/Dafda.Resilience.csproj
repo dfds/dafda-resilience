@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dafda" Version="1.1.0-beta1" />
+		<PackageReference Include="Dafda" Version="1.1.0" />
 		<PackageReference Include="Polly.Core" Version="8.6.5" />
 		<PackageReference Include="Polly.Extensions" Version="8.6.5" />
 	</ItemGroup>
