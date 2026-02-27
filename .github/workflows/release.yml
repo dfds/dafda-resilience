@@ -3,7 +3,7 @@ name: Dafda.Resilience Nuget Release
 on:
   push:
     branches:
-      - master
+      - main
     tags:
       - "*.*.*"
 
