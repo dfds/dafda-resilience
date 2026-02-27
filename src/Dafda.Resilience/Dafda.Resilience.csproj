@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="bin\Release\$(TargetFramework)\YourLibrary.xml" Pack="true" PackagePath="lib/$(TargetFramework)/" />
+		<None Include="bin\Release\$(TargetFramework)\Dafda.Resilience.xml" Pack="true" PackagePath="lib/$(TargetFramework)/" />
 		<None Include="README.md" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 
