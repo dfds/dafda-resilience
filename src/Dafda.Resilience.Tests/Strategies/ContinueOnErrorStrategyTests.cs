@@ -9,7 +9,11 @@ public sealed class ContinueOnErrorStrategyTests
     public void ExecutePipeline_NoException_ResultIsReturned()
     {
         var onErrorCalls = 0;
-        var pipeline = CreatePipeline(options => options.OnError = (_, __) => onErrorCalls++);
+        var pipeline = CreatePipeline(options => options.OnError = (_, __) =>
+        {
+            onErrorCalls++;
+            return ValueTask.CompletedTask;
+        });
 
         var result = pipeline.Execute(() => "expected");
 
@@ -25,8 +29,12 @@ public sealed class ContinueOnErrorStrategyTests
 
         var pipeline = CreatePipeline(options =>
         {
-            options.OnError = (ex, _) => capturedException = ex;
-            options.ShouldHandle = ex => ex is InvalidOperationException;
+            options.OnError = (ex, _) =>
+            {
+                capturedException = ex;
+                return ValueTask.CompletedTask;
+            };
+            options.ShouldHandle = ex => ValueTask.FromResult(ex is InvalidOperationException);
         });
 
         var result = pipeline.Execute<string>(() => throw exceptionToThrow);
@@ -43,8 +51,12 @@ public sealed class ContinueOnErrorStrategyTests
 
         var pipeline = CreatePipeline(options =>
         {
-            options.OnError = (_, __) => onErrorCalls++;
-            options.ShouldHandle = _ => false;
+            options.OnError = (_, __) =>
+            {
+                onErrorCalls++;
+                return ValueTask.CompletedTask;
+            };
+            options.ShouldHandle = _ => ValueTask.FromResult(false);
         });
 
         var thrown = Assert.Throws<InvalidOperationException>(() => pipeline.Execute(() => throw exceptionToThrow));
@@ -61,7 +73,7 @@ public sealed class ContinueOnErrorStrategyTests
         var pipeline = CreatePipeline(options =>
         {
             options.OnError = (_, __) => throw onErrorException;
-            options.ShouldHandle = _ => true;
+            options.ShouldHandle = _ => ValueTask.FromResult(true);
         });
 
         var thrown = Assert.Throws<ApplicationException>(() => pipeline.Execute(() => throw new InvalidOperationException("boom")));
