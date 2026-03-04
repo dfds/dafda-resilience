@@ -4,17 +4,18 @@ using Polly;
 namespace Dafda.Resilience.Strategies;
 
 /// <summary>
-/// A resilience strategy that continues execution on handled errors.
+/// A resilience strategy that continues execution after handling errors, allowing message processing to proceed even when exceptions occur.
+/// This strategy evaluates whether an exception should be handled based on the configured predicate, and invokes an error handler with both the exception and message context before suppressing the error.
 /// </summary>
 internal sealed class ContinueOnErrorStrategy : ResilienceStrategy
 {
-    private readonly Action<Exception, MessageExecutionContext> _onError;
-    private readonly Predicate<Exception> _shouldHandle;
+    private readonly Func<Exception, MessageExecutionContext, ValueTask> _onError;
+    private readonly Func<Exception, ValueTask<bool>> _shouldHandle;
     
     /// <summary>
-    /// Initializes a new instance of the <see cref="ContinueOnErrorStrategy"/> class.
+    /// Initializes a new instance of the <see cref="ContinueOnErrorStrategy"/> class with the specified options.
     /// </summary>
-    /// <param name="options">The options that configure the behavior of the strategy.</param>
+    /// <param name="options">The options that configure the error handling behavior, including which exceptions to handle and what action to take when an error occurs.</param>
     internal ContinueOnErrorStrategy(ContinueOnErrorStrategyOptions options)
     {
         _onError = options.OnError;
@@ -33,9 +34,10 @@ internal sealed class ContinueOnErrorStrategy : ResilienceStrategy
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
         Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback, ResilienceContext context, TState state)
     {
-        var outcome = await callback(context, state);
+        var outcome = await callback(context, state).ConfigureAwait(context.ContinueOnCapturedContext);
 
-        if (outcome.Exception is null || !_shouldHandle(outcome.Exception))
+        if (outcome.Exception is null ||
+            !await _shouldHandle(outcome.Exception).ConfigureAwait(context.ContinueOnCapturedContext))
         {
             return outcome;
         }
@@ -43,7 +45,7 @@ internal sealed class ContinueOnErrorStrategy : ResilienceStrategy
         try
         {
             var messageContext = context.Properties.GetValue(ResilienceKeys.MessageExecutionContextKey, new(null, null, null));    
-            _onError.Invoke(outcome.Exception, messageContext);
+            await _onError.Invoke(outcome.Exception, messageContext).ConfigureAwait(context.ContinueOnCapturedContext);
         }
         catch (Exception ex)
         {
